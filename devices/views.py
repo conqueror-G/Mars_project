@@ -53,6 +53,7 @@ class DeviceDetailView(View):
 
                          'matchedEquipment'    : [ 
                         {     
+                        'id'                         : equipment_device.equipment_id,
                         'matchedEquipmentOriginalId' : equipment_device.equipment.original_id,
                         'matchedEquipmentCategory'   : equipment_device.equipment.equipment_category.name,
                         'matchedEquipmentType'       : equipment_device.equipment.equipment_type.name    
@@ -95,7 +96,8 @@ class DeviceDetailHistoryView(View):
             limit     = int(request.GET.get('limit', 10))
             offset    = int(request.GET.get('offset', 0))
 
-            histories = History.objects.filter(equipment_gps_tracker_id=equipment_gps_tracker_id).order_by(order)[offset:offset+limit]
+            histories = History.objects.filter(equipment_gps_tracker_id=equipment_gps_tracker_id,repaired_sort_id=3).order_by(order)[offset:offset+limit]
+
             results   = [
                 {
                 'id'                                  : history.id,
@@ -177,7 +179,7 @@ class DeviceDetailBatteryView(View):
             order     = order_set.get(order_key, 'id')
             limit     = int(request.GET.get('limit', 10))
             offset    = int(request.GET.get('offset', 0))
-            histories = History.objects.all().order_by(order)[offset:offset+limit]
+            histories = History.objects.filter(equipment_gps_tracker_id=equipment_gps_tracker_id,repaired_sort_id=2).order_by(order)[offset:offset+limit]
 
             results   = [
                 {
@@ -211,10 +213,12 @@ class DeviceDetailBatteryView(View):
                     return JsonResponse ({'message':'ACCESS_DENIED'}, status=400)
 
                 repaired_sort_id = 2
+                repaired_purpose_id = 1
                 history = History.objects.create(
                     user                     = user,
                     equipment_gps_tracker_id = equipment_gps_tracker_id,
                     repaired_sort_id         = repaired_sort_id,
+                    repaired_purpose_id      = repaired_purpose_id,
                     repaired_manager_id      = data['repaired_manager_id'],
                     date                     = data['date']
                     )
