@@ -72,7 +72,7 @@ class EquipmentRegisteredView(View):
             return JsonResponse({'message' : 'SUCCESS'}, status= 201)
         except Equipment.DoesNotExist:
             return JsonResponse({'message' : 'INVALID_UPDATE'}, status= 404)
-            
+
 class EquipmentdetailView(View):
     def get(self,request, equipment_id):
         try:
